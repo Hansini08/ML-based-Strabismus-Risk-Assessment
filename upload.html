@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Eye Image</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 33%;
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+}
+
+h2 {
+    color: #333;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.95em;
+    margin-bottom: 30px;
+}
+
+.upload-area {
+    border: 3px dashed #667eea;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(102, 126, 234, 0.05);
+    margin-bottom: 25px;
+}
+
+.upload-area:hover {
+    border-color: #764ba2;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.upload-area.dragover {
+    background: rgba(102, 126, 234, 0.15);
+    border-color: #764ba2;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.upload-subtext {
+    color: #999;
+    font-size: 0.9em;
+}
+
+#fileInput {
+    display: none;
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+button {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-camera {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+}
+
+.btn-camera:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(245, 87, 108, 0.6);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    grid-column: 1 / -1;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    font-size: 1.1em;
+    padding: 16px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.preview-section {
+    margin-top: 25px;
+    text-align: center;
+    display: none;
+}
+
+.preview-label {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#preview {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#video {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+}
+
+#captureBtn {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+    color: white;
+    width: 100%;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0, 157, 255, 0.4);
+}
+
+#captureBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 157, 255, 0.6);
+}
+
+.camera-wrapper {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.camera-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background: #e8eaf2;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.preview-actions {
+    margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+    .card {
+        padding: 30px 20px;
+    }
+    
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+    
+    h2 {
+        font-size: 1.4em;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <h2>Upload or Capture</h2>
+        <p class="subtitle">Step 1 of 3 - Select your eye image</p>
+
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()" id="uploadArea">
+            <div class="upload-icon">📸</div>
+            <div class="upload-text">Click to upload or drag & drop</div>
+            <div class="upload-subtext">PNG, JPG, JPEG up to 10MB</div>
+        </div>
+
+        <form id="form" action="/questionnaire" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" id="fileInput" accept="image/*">
+
+            <div class="button-group">
+                <button type="button" class="btn-camera" onclick="startCamera()">📷 Use Camera</button>
+                <button type="submit" class="btn-primary" id="nextBtn" disabled>Next Step</button>
+            </div>
+        </form>
+
+        <div class="camera-wrapper" id="cameraWrapper" style="display:none;">
+            <video id="video" width="300" autoplay playsinline></video>
+            <div class="camera-actions">
+                <button type="button" id="captureBtn" onclick="captureImage()">📸 Capture Image</button>
+                <button type="button" class="btn-secondary" onclick="cancelCamera()">Cancel Camera</button>
+            </div>
+        </div>
+
+        <div class="preview-section" id="previewSection">
+            <span class="preview-label">Selected Image:</span>
+            <img id="preview" alt="Preview">
+            <div class="preview-actions">
+                <button type="button" class="btn-secondary" onclick="clearSelection()">Clear Selection</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let video = document.getElementById("video");
+let fileInput = document.getElementById("fileInput");
+let preview = document.getElementById("preview");
+let uploadArea = document.getElementById("uploadArea");
+let nextBtn = document.getElementById("nextBtn");
+let previewSection = document.getElementById("previewSection");
+let cameraWrapper = document.getElementById("cameraWrapper");
+let captureBtn = document.getElementById("captureBtn");
+let previewUrl = null;
+
+// Drag and drop
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        displayPreview(files[0]);
+    }
+});
+
+// FILE PREVIEW
+fileInput.onchange = e => {
+    const file = fileInput.files[0];
+    displayPreview(file);
+};
+
+function displayPreview(file) {
+    if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+    }
+    previewUrl = URL.createObjectURL(file);
+    preview.src = previewUrl;
+    previewSection.style.display = 'block';
+    nextBtn.disabled = false;
+    cancelCamera();
+}
+
+function stopCameraStream() {
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+}
+
+function cancelCamera() {
+    stopCameraStream();
+    cameraWrapper.style.display = 'none';
+
+    if (fileInput.files && fileInput.files.length > 0) {
+        previewSection.style.display = 'block';
+        nextBtn.disabled = false;
+    }
+}
+
+function clearSelection() {
+    stopCameraStream();
+    cameraWrapper.style.display = 'none';
+
+    fileInput.value = '';
+    if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+    }
+    preview.removeAttribute('src');
+    previewSection.style.display = 'none';
+    nextBtn.disabled = true;
+}
+
+// CAMERA START
+function startCamera(){
+    cameraWrapper.style.display = 'block';
+    previewSection.style.display = 'none';
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => alert('Camera access denied'));
+}
+
+// CAMERA CAPTURE - FIXED TO MAINTAIN ASPECT RATIO
+function captureImage(){
+    let canvas = document.createElement("canvas");
+    const videoWidth = video.videoWidth || 1280;
+    const videoHeight = video.videoHeight || 720;
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+
+    let ctx = canvas.getContext("2d");
+    // Keep full-resolution frame; server will handle eye-focused crop/resize.
+    ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+    canvas.toBlob(function(blob){
+        let file = new File([blob], "camera.jpg", { type: "image/jpeg" });
+        let container = new DataTransfer();
+        container.items.add(file);
+        fileInput.files = container.files;
+
+        displayPreview(file);
+    }, "image/jpeg", 0.98);
+}
+</script>
+
+</body>
+</html>

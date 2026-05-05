@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Results</title>
+
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        padding: 40px 20px;
+        color: #333;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    h1 {
+        color: white;
+        font-size: 2.2em;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-indicator {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.05em;
+        font-weight: 500;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .results-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .image-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        animation: slideIn 0.6s ease-out 0.2s both;
+    }
+
+    .report-card {
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.6s ease-out 0.3s both;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .image-card h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+    }
+
+    .image-card img {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .image-card img:hover {
+        transform: scale(1.05);
+    }
+
+    .report-section {
+        margin-bottom: 28px;
+        padding-bottom: 28px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .report-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    h3 {
+        color: #667eea;
+        font-size: 1.15em;
+        font-weight: 600;
+    }
+
+    .section-icon {
+        font-size: 1.5em;
+    }
+
+    .analysis-result {
+        background: rgba(102, 126, 234, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border-left: 4px solid #667eea;
+    }
+
+    .result-label {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
+
+    .result-value {
+        color: #333;
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    .detection-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.95em;
+        margin-top: 8px;
+    }
+
+    .detected {
+        background: #ffe6e6;
+        color: #d32f2f;
+    }
+
+    .not-detected {
+        background: #e6f7e6;
+        color: #2e7d32;
+    }
+
+    .risk-container {
+        text-align: center;
+        padding: 20px;
+        border-radius: 15px;
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .risk-label {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .risk-badge {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 1.2em;
+        font-weight: 700;
+        min-width: 150px;
+    }
+
+    .risk-low {
+        background: #e6f7e6;
+        color: #2e7d32;
+    }
+
+    .risk-moderate {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .risk-high {
+        background: #ffe6e6;
+        color: #d32f2f;
+    }
+
+    .reason-list {
+        background: rgba(102, 126, 234, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+    }
+
+    .reason-list li {
+        color: #333;
+        margin-bottom: 8px;
+        list-style-position: inside;
+    }
+
+    .reason-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .recommendation-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        font-weight: 500;
+        line-height: 1.6;
+    }
+
+    .final-verdict {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-top: 20px;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+
+    .button-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    button {
+        padding: 14px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.05em;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .disclaimer {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        color: #666;
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+        .results-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        h1 {
+            font-size: 1.6em;
+        }
+        
+        .report-card {
+            padding: 20px;
+        }
+        
+        .image-card {
+            padding: 20px;
+        }
+    }
+    </style>
+</head>
+
+<body>
+
+<div class="page-header">
+    <h1>Assessment Complete</h1>
+    <p class="progress-indicator">Step 3 of 3 - Your Results</p>
+    <p class="progress-indicator">Patient: {{ patient_name }}</p>
+</div>
+
+<div class="container">
+    <div class="results-grid">
+        <!-- IMAGE CARD -->
+        <div class="image-card">
+            <h3>📸 Your Eye Image</h3>
+            <img src="{{ url_for('static', filename=img_path) }}" alt="Eye Image">
+        </div>
+
+        <!-- REPORT CARD -->
+        <div class="report-card">
+            <!-- Image Analysis Section -->
+            <div class="report-section">
+                <div class="section-header">
+                    <span class="section-icon">🔍</span>
+                    <h3>Image Analysis</h3>
+                </div>
+                <div class="analysis-result">
+                    <div class="result-label">Classification:</div>
+                    <div class="result-value">{{ image_result }}</div>
+                </div>
+                <div>
+                    <span class="result-label">Strabismus Status:</span>
+                    <div class="detection-badge {% if detection == 'Detected' %}detected{% else %}not-detected{% endif %}">
+                        {% if detection == "Detected" %}
+                            ❗ Detected
+                        {% else %}
+                            ✅ Not Detected
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Risk Assessment -->
+            <div class="report-section">
+                <div class="section-header">
+                    <span class="section-icon">📊</span>
+                    <h3>Clinical Risk Assessment</h3>
+                </div>
+                <div class="risk-container">
+                    <div class="risk-label">Overall Risk Level:</div>
+                    <div class="risk-badge risk-{{ risk|lower }}">
+                        {{ risk }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Factors -->
+            <div class="report-section">
+                <div class="section-header">
+                    <span class="section-icon">🧠</span>
+                    <h3>Contributing Factors</h3>
+                </div>
+                <div class="reason-list">
+                    <li>{{ reason }}</li>
+                </div>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="report-section">
+                <div class="section-header">
+                    <span class="section-icon">💊</span>
+                    <h3>Medical Recommendation</h3>
+                </div>
+                <div class="recommendation-box">
+                    {{ recommendation }}
+                </div>
+            </div>
+
+            <!-- Final Verdict -->
+            <div class="final-verdict">
+                {{ final_msg }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="button-container">
+        <form action="/" style="display: inline;">
+            <button type="submit">← New Assessment</button>
+        </form>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        ⚠️ <strong>Medical Disclaimer:</strong> This AI-assisted system is designed for screening purposes only and should not be used as a substitute for professional medical diagnosis. Please consult with a qualified ophthalmologist for comprehensive eye evaluation and treatment.
+    </div>
+</div>
+
+</body>
+</html>

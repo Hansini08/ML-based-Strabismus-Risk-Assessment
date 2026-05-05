@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment History</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    min-height: 100vh;
+    padding: 32px 20px;
+    color: #1f2937;
+}
+
+.page-shell {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero {
+    color: white;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    opacity: 0.9;
+}
+
+.toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.toolbar a, .toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.toolbar .primary {
+    background: linear-gradient(135deg, #00b894 0%, #0984e3 100%);
+}
+
+.toolbar .secondary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.summary-card {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.summary-card .label {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.summary-card .value {
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.table-wrap {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+th, td {
+    padding: 14px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.92rem;
+}
+
+th {
+    color: #111827;
+    font-weight: 700;
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-high { background: #fee2e2; color: #b91c1c; }
+.badge-moderate { background: #fef3c7; color: #b45309; }
+.badge-low { background: #dcfce7; color: #15803d; }
+
+.empty-state {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 22px;
+    padding: 42px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+    .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .summary {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+}
+</style>
+</head>
+<body>
+<div class="page-shell">
+    <div class="hero">
+        <h1>Assessment History</h1>
+        <p>Stored patient records and previous strabismus risk assessments.</p>
+    </div>
+
+    <div class="toolbar">
+        <a href="/" class="secondary">Back to Home</a>
+        <a href="/upload" class="primary">Start New Assessment</a>
+    </div>
+
+    <div class="summary">
+        <div class="summary-card">
+            <div class="label">Total assessments</div>
+            <div class="value">{{ assessments|length }}</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Latest patient</div>
+            <div class="value">{% if assessments %}{{ assessments[0]['patient_name'] }}{% else %}-{% endif %}</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Latest risk</div>
+            <div class="value">{% if assessments %}{{ assessments[0]['risk'] }}{% else %}-{% endif %}</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Latest verdict</div>
+            <div class="value">{% if assessments %}{{ assessments[0]['final_msg'] }}{% else %}-{% endif %}</div>
+        </div>
+    </div>
+
+    {% if assessments %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Date</th>
+                    <th>Image Result</th>
+                    <th>Risk</th>
+                    <th>Verdict</th>
+                    <th>Age</th>
+                    <th>Reason</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assessment in assessments %}
+                <tr>
+                    <td>{{ assessment['id'] }}</td>
+                    <td>{{ assessment['patient_name'] }}</td>
+                    <td>{{ assessment['created_at'] }}</td>
+                    <td>{{ assessment['image_result'] }}</td>
+                    <td>
+                        <span class="badge {% if assessment['risk'] == 'HIGH' %}badge-high{% elif assessment['risk'] == 'MODERATE' %}badge-moderate{% else %}badge-low{% endif %}">{{ assessment['risk'] }}</span>
+                    </td>
+                    <td>{{ assessment['final_msg'] }}</td>
+                    <td>{{ assessment['age'] }}</td>
+                    <td>{{ assessment['reason'] }}</td>
+                    <td>{{ assessment['recommendation'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h2>No assessments yet</h2>
+        <p style="margin-top: 10px; color: #6b7280;">Run a new assessment to start building the patient history database.</p>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
