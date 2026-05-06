@@ -36,6 +36,3 @@ Strabismus (eye misalignment) requires early detection to prevent complications 
 - Larger clinical dataset integration
 - Integration with hospital systems
 
-## 🎥 Demo Video
-
-[Click here to watch the demo]([https://drive.google.com/your-link](https://drive.google.com/file/d/1FKFi8CS0939iLMZMzODVX9giHX8ktHQU/view?usp=drive_link))
